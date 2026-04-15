@@ -1,14 +1,36 @@
+from enum import Enum
 from typing import List, Optional, Union, Dict, Any
 from langchain_core.messages import AnyMessage
 from pydantic import BaseModel, Field
+import uuid
+from datetime import datetime
 
 
-class ChatModelsList(BaseModel):
+class ModelConfig(BaseModel):
+    """模型配置"""
+
+    modelName: str
+    provider: str = Field("openai", description="模型提供方")
+    baseUrl: str = Field(..., description="模型基础URL")
+    apiKey: str = Field(..., description="模型API密钥")
+
+
+class ModelSource(str, Enum):
+    """模型来源"""
+
+    default = "default"
+    custom = "custom"
+
+
+class ChatModelsList(ModelConfig):
     """模型列表"""
 
-    id: str
-    model_name: str
-    provider: str
+    id: str = Field(default=str(uuid.uuid4()), description="模型ID")
+    modelSource: ModelSource = Field(
+        default=ModelSource.default, description="模型来源"
+    )
+    createdAt: str = Field(default=datetime.now(), description="创建时间")
+    updatedAt: str = Field(default=datetime.now(), description="更新时间")
 
 
 class FunctionDefinition(BaseModel):
