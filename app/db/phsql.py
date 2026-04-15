@@ -8,8 +8,7 @@ engine = create_engine(MyAppConfig.DATABASE_URL, echo=MyAppConfig.DATABASE_ECHO)
 
 
 async def get_session():
-    async with Session(bind=engine) as session:
-        yield session
+        
+    session = Session(bind=engine)
+    yield session
 
-
-SessionDep = Annotated[Session, Depends(get_session)]
