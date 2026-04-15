@@ -4,7 +4,8 @@ from fastapi.responses import FileResponse
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
-# from app.db.milvus import create_milvus_uri
+from app.db.phsql import engine
+from sqlmodel import SQLModel
 from app.middleware import apply_logger_middleware
 from app.routers.models import models_router
 
@@ -13,7 +14,8 @@ from app.routers.models import models_router
 async def lifespan(app: FastAPI | None) -> AsyncGenerator[None, Any]:
     if app is not None:
         print("应用启动")
-        # create_milvus_uri()
+        SQLModel.metadata.create_all(engine)
+        print("数据库表创建完成")
         yield
         print("应用关闭")
 
