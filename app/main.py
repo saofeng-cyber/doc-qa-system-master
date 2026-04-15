@@ -1,9 +1,9 @@
-from typing import Any, AsyncGenerator
+from typing import Any
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
-
+from collections.abc import AsyncGenerator
 from app.db.phsql import engine
 from sqlmodel import SQLModel
 from app.middleware import apply_logger_middleware
