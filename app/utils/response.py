@@ -1,18 +1,28 @@
+from fastapi import HTTPException, status
 from pydantic import BaseModel
-from typing import Optional, Any, TypeVar, Generic
+from typing import Any, TypeVar, Generic
 
 
 class StandardResponse(BaseModel):
     code: int = 200
     message: str = "success"
-    data: Optional[Any] = None
+    data: Any = None
+
+
+class ErrorResponse(HTTPException):
+    def __init__(
+        self,
+        data: Any = None,
+        message: str = "failed",
+        code: int = status.HTTP_400_BAD_REQUEST,
+    ):
+        super().__init__(status_code=code, detail=message)
+        self.code = code
+        self.message = message
+        self.data = data
 
 
 def success_response(data: Any = None, message: str = "success", code: int = 200):
-    return StandardResponse(code=code, message=message, data=data)
-
-
-def error_response(data: Any = None, message: str = "failed", code: int = 400):
     return StandardResponse(code=code, message=message, data=data)
 
 
@@ -24,4 +34,4 @@ DataT = TypeVar("DataT")
 class ResponseModel(BaseModel, Generic[DataT]):
     code: int = 200
     message: str = "success"
-    data: Optional[DataT] = None
+    data: DataT | None = None
